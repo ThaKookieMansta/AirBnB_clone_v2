@@ -8,7 +8,6 @@ from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 import models
 
-
 Base = declarative_base()
 
 
@@ -16,7 +15,7 @@ class BaseModel:
     """
     This is the base class for the entire AirBnb project
     """
-    DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"
+
     id = Column(String(60), primary_key=True, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
@@ -28,25 +27,19 @@ class BaseModel:
         """
 
         self.id = str(uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
-
-        if len(kwargs) > 0:
-            for k, v in kwargs.items():
-
-                if k == "created_at" or k == "updated_at":
-                    self.__dict__[k] = datetime.strptime(v,
-                                                         BaseModel.DATE_FORMAT)
-                else:
-                    self.__dict__[k] = v
-                if k != "__class__":
-                    setattr(self, k, v)
+        self.created_at = self.updated_at = datetime.utcnow()
+        if kwargs:
+            for key, value in kwargs.items():
+                if key == "created_at" or key == "updated_at":
+                    value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+                if key != "__class__":
+                    setattr(self, key, value)
 
     def __str__(self):
         """
-        This method returns the printable output for the class
-        :return:
-        """
+            This method returns the printable output for the class
+            :return:
+            """
         d = self.__dict__.copy()
         d.pop("_sa_instance_state", None)
         return "[{}] ({}) {}".format(type(self).__name__, self.id, d)
