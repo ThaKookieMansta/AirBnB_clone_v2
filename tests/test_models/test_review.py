@@ -13,7 +13,10 @@ class TestReview(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """set up for test"""
+        """this method raises an exception while the test is running, the framework will
+        consider the test to have suffered an error,
+        and the test method will not be executed.
+        """
         cls.rev = Review()
         cls.rev.place_id = "4321-dcba"
         cls.rev.user_id = "123-bca"
@@ -21,11 +24,11 @@ class TestReview(unittest.TestCase):
 
     @classmethod
     def teardown(cls):
-        """at the end of the test this will tear it down"""
+        """method that tidies up after the test method has been run"""
         del cls.rev
 
     def tearDown(self):
-        """teardown"""
+        """method that tidies up after the test method has been run"""
         try:
             os.remove("file.json")
         except Exception:
@@ -38,11 +41,11 @@ class TestReview(unittest.TestCase):
         self.assertEqual(p.total_errors, 0, "fix pep8")
 
     def test_checking_for_docstring_Review(self):
-        """checking for docstrings"""
+        """this method checks the documentation"""
         self.assertIsNotNone(Review.__doc__)
 
     def test_attributes_review(self):
-        """chekcing if review have attributes"""
+        """this method checks the attribute type of Review """
         self.assertTrue('id' in self.rev.__dict__)
         self.assertTrue('created_at' in self.rev.__dict__)
         self.assertTrue('updated_at' in self.rev.__dict__)
@@ -51,23 +54,23 @@ class TestReview(unittest.TestCase):
         self.assertTrue('user_id' in self.rev.__dict__)
 
     def test_is_subclass_Review(self):
-        """test if review is subclass of BaseModel"""
+        """this method checks whether review is a subclass of BaseModel"""
         self.assertTrue(issubclass(self.rev.__class__, BaseModel), True)
 
     def test_attribute_types_Review(self):
-        """test attribute type for Review"""
+        """this method checks the attribute type of Review"""
         self.assertEqual(type(self.rev.text), str)
         self.assertEqual(type(self.rev.place_id), str)
         self.assertEqual(type(self.rev.user_id), str)
 
     @unittest.skipIf(getenv("HBNB_TYPE_STORAGE") == 'db', 'DB')
     def test_save_Review(self):
-        """test if the save works"""
+        """this method checks whether save works"""
         self.rev.save()
         self.assertNotEqual(self.rev.created_at, self.rev.updated_at)
 
     def test_to_dict_Review(self):
-        """test if dictionary works"""
+        """this method checks whether dictionary works"""
         self.assertEqual('to_dict' in dir(self.rev), True)
 
 

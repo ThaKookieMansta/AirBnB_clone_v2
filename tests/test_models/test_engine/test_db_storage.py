@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""test for file storage"""
+"""File storage tests"""
 import unittest
 import pep8
 import json
@@ -18,11 +18,15 @@ from models.engine.db_storage import DBStorage
 
 @unittest.skipIf(getenv("HBNB_TYPE_STORAGE") != 'db', 'NO DB')
 class TestDBStorage(unittest.TestCase):
-    """this will test the DBStorage"""
+    """db_storage file test"""
+
 
     @classmethod
     def setUpClass(cls):
-        """set up for test"""
+        """this method raises an exception while the test is running, the framework will
+        consider the test to have suffered an error,
+        and the test method will not be executed.
+        """
         cls.User = getenv("HBNB_MYSQL_USER")
         cls.Passwd = getenv("HBNB_MYSQL_PWD")
         cls.Db = getenv("HBNB_MYSQL_DB")
@@ -36,50 +40,52 @@ class TestDBStorage(unittest.TestCase):
 
     @classmethod
     def teardown(cls):
-        """at the end of the test this will tear it down"""
+        """method that tidies up after the test method has been run"""
         cls.query.close()
         cls.db.close()
 
     @unittest.skipIf(getenv("HBNB_TYPE_STORAGE") != 'db', 'NO DB')
-    def test_pep8_DBStorage(self):
-        """Test Pep8"""
+    def test_db_storage(self):
+        """Pep8 Test"""
         style = pep8.StyleGuide(quiet=True)
         p = style.check_files(['models/engine/db_storage.py'])
         self.assertEqual(p.total_errors, 0, "fix pep8")
 
     @unittest.skipIf(getenv("HBNB_TYPE_STORAGE") != 'db', 'NO DB')
-    def test_read_tables(self):
-        """existing tables"""
+    def test_tables(self):
+        """this method tests tables"""
         self.query.execute("SHOW TABLES")
-        salida = self.query.fetchall()
-        self.assertEqual(len(salida), 7)
+        output = self.query.fetchall()
+        self.assertEqual(len(output), 7)
 
     @unittest.skipIf(getenv("HBNB_TYPE_STORAGE") != 'db', 'NO DB')
-    def test_no_element_user(self):
-        """no elem in users"""
+    def test_user_elements(self):
+        """this method tests elements"""
         self.query.execute("SELECT * FROM users")
-        salida = self.query.fetchall()
-        self.assertEqual(len(salida), 0)
+        output = self.query.fetchall()
+        self.assertEqual(len(output), 0)
 
     @unittest.skipIf(getenv("HBNB_TYPE_STORAGE") != 'db', 'NO DB')
-    def test_no_element_cities(self):
-        """no elem in cities"""
+    def test_cities_elements(self):
+        """this method tests elements"""
         self.query.execute("SELECT * FROM cities")
-        salida = self.query.fetchall()
-        self.assertEqual(len(salida), 0)
+        output = self.query.fetchall()
+        self.assertEqual(len(output), 0)
 
     @unittest.skipIf(getenv("HBNB_TYPE_STORAGE") != 'db', 'NO DB')
     def test_add(self):
-        """Test same size between storage() and existing db"""
+        """this method adds two nums and checks if the result is equal to expected
+         sum.
+         """
         self.query.execute("SELECT * FROM states")
-        salida = self.query.fetchall()
-        self.assertEqual(len(salida), 0)
+        output = self.query.fetchall()
+        self.assertEqual(len(output), 0)
         state = State(name="LUISILLO")
         state.save()
         self.db.autocommit(True)
         self.query.execute("SELECT * FROM states")
-        salida = self.query.fetchall()
-        self.assertEqual(len(salida), 1)
+        output = self.query.fetchall()
+        self.assertEqual(len(output), 1)
 
 
 if __name__ == "__main__":

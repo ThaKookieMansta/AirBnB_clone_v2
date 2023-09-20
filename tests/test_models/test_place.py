@@ -13,7 +13,10 @@ class TestPlace(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """set up for test"""
+        """this method raises an exception while the test is running, the framework will
+        consider the test to have suffered an error,
+        and the test method will not be executed.
+        """
         cls.place = Place()
         cls.place.city_id = "1234-abcd"
         cls.place.user_id = "4321-dcba"
@@ -29,28 +32,28 @@ class TestPlace(unittest.TestCase):
 
     @classmethod
     def teardown(cls):
-        """at the end of the test this will tear it down"""
+        """method that tidies up after the test method has been run"""
         del cls.place
 
     def tearDown(self):
-        """teardown"""
+        """method that tidies up after the test method has been run"""
         try:
             os.remove("file.json")
         except Exception:
             pass
 
     def test_pep8_Place(self):
-        """Tests pep8 style"""
+        """Pep8 test"""
         style = pep8.StyleGuide(quiet=True)
         p = style.check_files(['models/place.py'])
         self.assertEqual(p.total_errors, 0, "fix pep8")
 
     def test_checking_for_docstring_Place(self):
-        """checking for docstrings"""
+        """this method checks the documentation"""
         self.assertIsNotNone(Place.__doc__)
 
     def test_attributes_Place(self):
-        """chekcing if amenity have attributes"""
+        """this method checks the attributes of Place"""
         self.assertTrue('id' in self.place.__dict__)
         self.assertTrue('created_at' in self.place.__dict__)
         self.assertTrue('updated_at' in self.place.__dict__)
@@ -67,11 +70,11 @@ class TestPlace(unittest.TestCase):
         self.assertTrue('amenity_ids' in self.place.__dict__)
 
     def test_is_subclass_Place(self):
-        """test if Place is subclass of Basemodel"""
+        """this method checks whether Place is a subclass of Basemodel"""
         self.assertTrue(issubclass(self.place.__class__, BaseModel), True)
 
     def test_attribute_types_Place(self):
-        """test attribute type for Place"""
+        """this method checks the attribute type of Place"""
         self.assertEqual(type(self.place.city_id), str)
         self.assertEqual(type(self.place.user_id), str)
         self.assertEqual(type(self.place.name), str)
@@ -86,12 +89,12 @@ class TestPlace(unittest.TestCase):
 
     @unittest.skipIf(getenv("HBNB_TYPE_STORAGE") == 'db', 'DB')
     def test_save_Place(self):
-        """test if the save works"""
+        """this method checks whether save works"""
         self.place.save()
         self.assertNotEqual(self.place.created_at, self.place.updated_at)
 
     def test_to_dict_Place(self):
-        """test if dictionary works"""
+        """this method checks whether dictionary works"""
         self.assertEqual('to_dict' in dir(self.place), True)
 
 

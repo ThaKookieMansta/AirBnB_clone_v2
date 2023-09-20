@@ -24,29 +24,32 @@ class TestConsole(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """setup for the test"""
+        """this method raises an exception while the test is running, the framework will
+        consider the test to have suffered an error,
+        and the test method will not be executed.
+        """
         cls.consol = HBNBCommand()
 
     @classmethod
     def teardown(cls):
-        """at the end of the test this will tear it down"""
+        """method that tidies up after the test method has been run"""
         del cls.consol
 
     def tearDown(self):
-        """Remove temporary file (file.json) created as a result"""
+        """method that tidies up after the test method has been run"""
         try:
             os.remove("file.json")
         except Exception:
             pass
 
     def test_pep8_console(self):
-        """Pep8 console.py"""
+        """Pep8 test"""
         style = pep8.StyleGuide(quiet=True)
         p = style.check_files(["console.py"])
         self.assertEqual(p.total_errors, 0, 'fix Pep8')
 
     def test_docstrings_in_console(self):
-        """checking for docstrings"""
+        """this method checks the documentation"""
         self.assertIsNotNone(console.__doc__)
         self.assertIsNotNone(HBNBCommand.emptyline.__doc__)
         self.assertIsNotNone(HBNBCommand.do_quit.__doc__)
