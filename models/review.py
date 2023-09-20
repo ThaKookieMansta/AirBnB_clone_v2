@@ -4,7 +4,7 @@ This module defines a Review class
 """
 from sqlalchemy import ForeignKey, String, Column
 
-from models.base_model import BaseModel, Base
+from models.base_model import Base, BaseModel
 
 
 class Review(BaseModel, Base):

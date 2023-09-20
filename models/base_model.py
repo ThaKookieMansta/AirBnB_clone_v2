@@ -4,10 +4,8 @@ This module carries the base model for the entire AIRBNB Project
 """
 from uuid import uuid4
 from datetime import datetime
-
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
-
 import models
 
 
@@ -49,17 +47,17 @@ class BaseModel:
         This method returns the printable output for the class
         :return:
         """
-        cls = (str(type(self)).split('.')[-1]).split('\'')[0]
-        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
+        d = self.__dict__.copy()
+        d.pop("_sa_instance_state", None)
+        return "[{}] ({}) {}".format(type(self).__name__, self.id, d)
 
     def save(self):
         """
         This method updates the current time to the updated_at attribute
         :return:
         """
-        from models import storage
-        self.updated_at = datetime.now()
-        models.storage.new(self)
+
+        self.updated_at = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
         models.storage.save()
 
     def to_dict(self):
@@ -67,14 +65,12 @@ class BaseModel:
         :return: Returns a dictionary containing all keys/values
         of __dict__ of the instance.
         """
-        dictionary = {}
-        dictionary.update(self.__dict__)
-        dictionary.update({'__class__':
-                          (str(type(self)).split('.')[-1]).split('\'')[0]})
-        dictionary['created_at'] = self.created_at.isoformat()
-        dictionary['updated_at'] = self.updated_at.isoformat()
-        dictionary.pop("_sa_instance_state", None)
-        return dictionary
+        my_dict = self.__dict__.copy()
+        my_dict["__class__"] = str(type(self).__name__)
+        my_dict["created_at"] = self.created_at.isoformat()
+        my_dict["updated_at"] = self.updated_at.isoformat()
+        my_dict.pop("_sa_instance_state", None)
+        return my_dict
 
     def delete(self):
         """

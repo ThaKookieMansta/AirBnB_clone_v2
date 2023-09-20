@@ -4,6 +4,9 @@ This module contains the class File storage which handles
 serialization and deserialization of the dictionaries
 """
 import json
+import datetime
+
+from models.base_model import BaseModel
 
 
 class FileStorage:
@@ -36,50 +39,52 @@ class FileStorage:
 
         Returns:
         """
-        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
+        obj_dict = obj.to_dict()
+        key = f"{obj_dict['__class__']}.{str(obj.id)}"
+        FileStorage.__objects[key] = obj
 
     def save(self):
         """
         serializes __objects to the JSON file (path: __file_path)
         Returns:
         """
-        with open(FileStorage.__file_path, 'w') as f:
-            temp = {}
-            temp.update(FileStorage.__objects)
-            for key, val in temp.items():
-                temp[key] = val.to_dict()
-            json.dump(temp, f)
+        new_dict = self.__objects
+        object_dictionary = {obj_id: obj.to_dict() for obj_id, obj in
+                             new_dict.items()}
 
-    def reload(self):
-        """
-        deserializes the JSON file to __objects (only if the JSON
-        file (__file_path) exists ; otherwise, do nothing.
-        If the file doesn't exist, no exception should be raised)
+        for obj_id in object_dictionary:
+            obj_data = object_dictionary[obj_id]
+            for key, value in obj_data.items():
+                if isinstance(value, datetime.datetime):
+                    obj_data[key] = value.strftime(BaseModel.DATE_FORMAT)
 
-        Returns:
+        with open(FileStorage.__file_path, mode="w") as json_file:
+            json.dump(object_dictionary, json_file)
 
-        """
-        from models.base_model import BaseModel
-        from models.user import User
-        from models.place import Place
-        from models.state import State
-        from models.city import City
-        from models.amenity import Amenity
-        from models.review import Review
 
-        classes = {
-                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
-                    'State': State, 'City': City, 'Amenity': Amenity,
-                    'Review': Review
-                  }
-        try:
-            temp = {}
-            with open(FileStorage.__file_path, 'r') as f:
-                temp = json.load(f)
-                for key, val in temp.items():
-                    self.all()[key] = classes[val['__class__']](**val)
-        except FileNotFoundError:
-            pass
+def reload(self):
+    """
+    deserializes the JSON file to __objects (only if the JSON
+    file (__file_path) exists ; otherwise, do nothing.
+    If the file doesn't exist, no exception should be raised)
+
+    Args:
+        self:
+
+    Returns:
+    """
+    try:
+        with open(FileStorage.__file_path) as json_file:
+            reloaded_dict = json.load(json_file)
+            for obj_data in reloaded_dict.values():
+                if "__class__" in obj_data:
+                    class_name = obj_data.pop("__class__")
+                    cls = globals().get(class_name)
+                    if cls and issubclass(cls, BaseModel):
+                        obj = cls(**obj_data)
+                        self.new(obj)
+    except FileNotFoundError:
+        pass
 
     def delete(self, obj=None):
         """
@@ -94,3 +99,14 @@ class FileStorage:
             del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
         except (AttributeError, KeyError):
             pass
+
+    def close(self):
+        """
+        Calls the reload method
+        Args:
+            self:
+
+        Returns:
+
+        """
+        self.reload()
