@@ -2,13 +2,13 @@
 """
 This module carries the base model for the entire AIRBNB Project
 """
+import models
 from uuid import uuid4
 from datetime import datetime
-
-from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
-
-import models
+from sqlalchemy import Column
+from sqlalchemy import DateTime
+from sqlalchemy import String
 
 
 Base = declarative_base()

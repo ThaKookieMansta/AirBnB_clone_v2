@@ -2,9 +2,12 @@
 """
 This module defines a Review class
 """
-from sqlalchemy import ForeignKey, String, Column
-
-from models.base_model import BaseModel, Base
+from models.base_model import Base
+from models.base_model import BaseModel
+from sqlalchemy import Column
+from sqlalchemy import ForeignKey
+from sqlalchemy import String
+from sqlalchemy.orm import relationship
 
 
 class Review(BaseModel, Base):

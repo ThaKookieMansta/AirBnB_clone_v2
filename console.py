@@ -144,13 +144,13 @@ class HBNBCommand(cmd.Cmd):
         """
         pass
 
-    def do_create(self, args):
+    def do_create(self, arg):
         """
         This method creates a new instance of
         Base Model, saves it to a json file and
         prints the id
         Args:
-            args: The class name
+            arg: The class name
 
         Examples:
             create BaseModel
@@ -159,9 +159,9 @@ class HBNBCommand(cmd.Cmd):
 
         """
         try:
-            if not args:
+            if not arg:
                 raise SyntaxError()
-            args_list = args.split(" ")
+            args_list = arg.split(" ")
 
             kwargs = {}
             for i in range(1, len(args_list)):
