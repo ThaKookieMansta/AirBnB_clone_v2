@@ -33,14 +33,12 @@ class BaseModel:
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
 
-        if len(kwargs) > 0:
+        if kwargs:
             for k, v in kwargs.items():
 
                 if k == "created_at" or k == "updated_at":
                     self.__dict__[k] = datetime.strptime(v,
                                                          BaseModel.DATE_FORMAT)
-                else:
-                    self.__dict__[k] = v
                 if k != "__class__":
                     setattr(self, k, v)
 
@@ -49,15 +47,16 @@ class BaseModel:
         This method returns the printable output for the class
         :return:
         """
-        cls = (str(type(self)).split('.')[-1]).split('\'')[0]
-        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
+        my_str = self.__dict__.copy()
+        my_str.pop("_sa_instance_state", None)
+        return "[{}] ({}) {}".format(type(self).__name__, self.id, my_str)
 
     def save(self):
         """
         This method updates the current time to the updated_at attribute
         :return:
         """
-        from models import storage
+
         self.updated_at = datetime.now()
         models.storage.new(self)
         models.storage.save()
@@ -67,14 +66,12 @@ class BaseModel:
         :return: Returns a dictionary containing all keys/values
         of __dict__ of the instance.
         """
-        dictionary = {}
-        dictionary.update(self.__dict__)
-        dictionary.update({'__class__':
-                          (str(type(self)).split('.')[-1]).split('\'')[0]})
-        dictionary['created_at'] = self.created_at.isoformat()
-        dictionary['updated_at'] = self.updated_at.isoformat()
-        dictionary.pop("_sa_instance_state", None)
-        return dictionary
+        my_dict = self.__dict__.copy()
+        my_dict["__class__"] = str(type(self).__name__)
+        my_dict["created_at"] = self.created_at.isoformat()
+        my_dict["updated_at"] = self.updated_at.isoformat()
+        my_dict.pop("_sa_instance_state", None)
+        return my_dict
 
     def delete(self):
         """
