@@ -1,142 +1,141 @@
-<center> <h1>HBNB - The Console</h1> </center>
+# AirBNB Clone project for ALX
 
-This repository contains the initial stage of a student project to build a clone of the AirBnB website. This stage implements a backend interface, or console, to manage program data. Console commands allow the user to create, update, and destroy objects, as well as manage file storage. Using a system of JSON serialization/deserialization, storage is persistent between sessions.
 
----
+## Introduction
 
-<center><h3>Repository Contents by Project Task</h3> </center>
+Welcome to our Airbnb Clone project! This is a platform designed to replicate the core functionality of the popular 
+vacation rental and lodging service, Airbnb. Our aim is to provide users with a seamless and user-friendly experience 
+for searching, booking, and listing accommodations, just like the original Airbnb.
 
-| Tasks | Files | Description |
-| ----- | ----- | ------ |
-| 0: Authors/README File | [AUTHORS](https://github.com/justinmajetich/AirBnB_clone/blob/dev/AUTHORS) | Project authors |
-| 1: Pep8 | N/A | All code is pep8 compliant|
-| 2: Unit Testing | [/tests](https://github.com/justinmajetich/AirBnB_clone/tree/dev/tests) | All class-defining modules are unittested |
-| 3. Make BaseModel | [/models/base_model.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/models/base_model.py) | Defines a parent class to be inherited by all model classes|
-| 4. Update BaseModel w/ kwargs | [/models/base_model.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/models/base_model.py) | Add functionality to recreate an instance of a class from a dictionary representation|
-| 5. Create FileStorage class | [/models/engine/file_storage.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/models/engine/file_storage.py) [/models/_ _init_ _.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/models/__init__.py) [/models/base_model.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/models/base_model.py) | Defines a class to manage persistent file storage system|
-| 6. Console 0.0.1 | [console.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/console.py) | Add basic functionality to console program, allowing it to quit, handle empty lines and ^D |
-| 7. Console 0.1 | [console.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/console.py) | Update the console with methods allowing the user to create, destroy, show, and update stored data |
-| 8. Create User class | [console.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/console.py) [/models/engine/file_storage.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/models/engine/file_storage.py) [/models/user.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/models/user.py) | Dynamically implements a user class |
-| 9. More Classes | [/models/user.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/models/user.py) [/models/place.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/models/place.py) [/models/city.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/models/city.py) [/models/amenity.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/models/amenity.py) [/models/state.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/models/state.py) [/models/review.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/models/review.py) | Dynamically implements more classes |
-| 10. Console 1.0 | [console.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/console.py) [/models/engine/file_storage.py](https://github.com/justinmajetich/AirBnB_clone/blob/dev/models/engine/file_storage.py) | Update the console and file storage system to work dynamically with all  classes update file storage |
-<br>
-<br>
-<center> <h2>General Use</h2> </center>
+## Overview
 
-1. First clone this repository.
+The Airbnb Clone project is a web application that allows users to browse through a wide range of accommodations, 
+including apartments, houses, villas, and more. Users can search for properties based on various criteria such as 
+location, check-in and check-out dates, number of guests, and price range. They can view detailed property listings, 
+complete with photos, descriptions, amenities, and reviews from previous guests.
 
-3. Once the repository is cloned locate the "console.py" file and run it as follows:
+In addition to searching for accommodations, users can also create accounts, list their own properties for rent, manage 
+their bookings, and communicate with other users through our integrated messaging system. Hosts can provide information 
+about their properties, set pricing and availability, and interact with potential guests. Guests can submit booking 
+requests, view booking history, and leave reviews after their stays.
+
+This project aims to showcase our skills in web development, user experience design, and database management. Whether 
+you're a traveler looking for a place to stay or a host interested in renting out your property, our Airbnb Clone 
+provides a comprehensive solution.
+
+## The console
+This project consists of a console that is used for backend tasks such as creating users, updating information
+, deleting users and other miscellaneous tasks.
+
+Shown below is the overview of the interaction
+
+```commandline
+Welcome to the hbnb console
+
+
+(hbnb) help
+
+            Available Commands(For detailed explanation including
+            examples, run help <command>):
+            
+            EOF or quit :   Exits the shell
+            help        :   Displays this list
+            create      :   Creates a new instance
+            show        :   Prints a string representation of an
+                            instance based on class name
+            destroy     :   Deletes an instance based on the class
+                            name and ID
+            all         :   Prints all string representation of all instances
+            update      :   Updates an instance based on the class name and id
+                            by adding or updating attribute (save the change into
+                            the JSON file).
+
+
 ```
-/AirBnB_clone$ ./console.py
+For an extensive look at the commands with usage examples, run the help command before the command as
+shown below.
+
+```commandline
+(hbnb) help create
+
+        This method creates a new instance of
+        Base Model, saves it to a json file and
+        prints the id
+        Args:
+            cls_name: The class name
+
+        Examples:
+            create BaseModel
+
+        Returns:
+
+        
+(hbnb) help show
+
+        This method prints the string representation of an instance
+        based on the class name and  id
+        Args:
+            arg
+
+        Examples:
+            show <class Name> <id>
+            show BaseModel 1234-1234-1234
+
+        Returns:
+
+        
+(hbnb) help quit
+
+        Exits the interactive shell
+        Args:
+            arg:
+
+        Returns:
+
+        
+(hbnb) 
+
 ```
-4. When this command is run the following prompt should appear:
+
+## Setup
+
+To setup the program, clone this repository then navigate to the root directory. In there you will find 
+the script console.py. This program is a plug-and-play kind of program so no installation is required.
+Run the script as shown below then use it as guided.
+
+```commandline
+$ ./console.py
 ```
-(hbnb)
-```
-5. This prompt designates you are in the "HBnB" console. There are a variety of commands available within the console program.
-
-##### Commands
-    * create - Creates an instance based on given class
-
-    * destroy - Destroys an object based on class and UUID
-
-    * show - Shows an object based on class and UUID
-
-    * all - Shows all objects the program has access to, or all objects of a given class
-
-    * update - Updates existing attributes an object based on class name and UUID
-
-    * quit - Exits the program (EOF will as well)
 
 
-##### Alternative Syntax
-Users are able to issue a number of console command using an alternative syntax:
 
-	Usage: <class_name>.<command>([<id>[name_arg value_arg]|[kwargs]])
-Advanced syntax is implemented for the following commands: 
+## Usage
 
-    * all - Shows all objects the program has access to, or all objects of a given class
+To familiarise yourself with the program, run help so that you get an idea of the command you can run and 
+the expected arguments and results.
 
-	* count - Return number of object instances by class
+### Create
 
-    * show - Shows an object based on class and UUID
+To start things off, let us create an instance. The command is 
 
-	* destroy - Destroys an object based on class and UUID
+**create class_name** 
 
-    * update - Updates existing attributes an object based on class name and UUID
+This will then create a class and print the ID while saving it to a json file for later reference.
+<ul>
+<li>If the class name is missing it will display a message indicating as such</li>
+<li>As above, if the class name does not exist, there will be a message highlighting so</li>
+</ul>
 
-<br>
-<br>
-<center> <h2>Examples</h2> </center>
-<h3>Primary Command Syntax</h3>
-
-###### Example 0: Create an object
-Usage: create <class_name>
-```
+```commandline
 (hbnb) create BaseModel
-```
-```
-(hbnb) create BaseModel
-3aa5babc-efb6-4041-bfe9-3cc9727588f8
-(hbnb)                   
-```
-###### Example 1: Show an object
-Usage: show <class_name> <_id>
+d34afd51-694e-45b7-a65c-18752e2a34fc
+(hbnb) 
+(hbnb) create HandModel
+** class doesn't exist **
+(hbnb) 
+(hbnb) 
+(hbnb) create
+** class name missing **
+(hbnb) 
 
 ```
-(hbnb) show BaseModel 3aa5babc-efb6-4041-bfe9-3cc9727588f8
-[BaseModel] (3aa5babc-efb6-4041-bfe9-3cc9727588f8) {'id': '3aa5babc-efb6-4041-bfe9-3cc9727588f8', 'created_at': datetime.datetime(2020, 2, 18, 14, 21, 12, 96959), 
-'updated_at': datetime.datetime(2020, 2, 18, 14, 21, 12, 96971)}
-(hbnb)  
-```
-###### Example 2: Destroy an object
-Usage: destroy <class_name> <_id>
-```
-(hbnb) destroy BaseModel 3aa5babc-efb6-4041-bfe9-3cc9727588f8
-(hbnb) show BaseModel 3aa5babc-efb6-4041-bfe9-3cc9727588f8
-** no instance found **
-(hbnb)   
-```
-###### Example 3: Update an object
-Usage: update <class_name> <_id>
-```
-(hbnb) update BaseModel b405fc64-9724-498f-b405-e4071c3d857f first_name "person"
-(hbnb) show BaseModel b405fc64-9724-498f-b405-e4071c3d857f
-[BaseModel] (b405fc64-9724-498f-b405-e4071c3d857f) {'id': 'b405fc64-9724-498f-b405-e4071c3d857f', 'created_at': datetime.datetime(2020, 2, 18, 14, 33, 45, 729889), 
-'updated_at': datetime.datetime(2020, 2, 18, 14, 33, 45, 729907), 'first_name': 'person'}
-(hbnb)
-```
-<h3>Alternative Syntax</h3>
-
-###### Example 0: Show all User objects
-Usage: <class_name>.all()
-```
-(hbnb) User.all()
-["[User] (99f45908-1d17-46d1-9dd2-b7571128115b) {'updated_at': datetime.datetime(2020, 2, 19, 21, 47, 34, 92071), 'id': '99f45908-1d17-46d1-9dd2-b7571128115b', 'created_at': datetime.datetime(2020, 2, 19, 21, 47, 34, 92056)}", "[User] (98bea5de-9cb0-4d78-8a9d-c4de03521c30) {'updated_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134362), 'id': '98bea5de-9cb0-4d78-8a9d-c4de03521c30', 'created_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134343)}"]
-```
-
-###### Example 1: Destroy a User
-Usage: <class_name>.destroy(<_id>)
-```
-(hbnb) User.destroy("99f45908-1d17-46d1-9dd2-b7571128115b")
-(hbnb)
-(hbnb) User.all()
-(hbnb) ["[User] (98bea5de-9cb0-4d78-8a9d-c4de03521c30) {'updated_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134362), 'id': '98bea5de-9cb0-4d78-8a9d-c4de03521c30', 'created_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134343)}"]
-```
-###### Example 2: Update User (by attribute)
-Usage: <class_name>.update(<_id>, <attribute_name>, <attribute_value>)
-```
-(hbnb) User.update("98bea5de-9cb0-4d78-8a9d-c4de03521c30", name "Todd the Toad")
-(hbnb)
-(hbnb) User.all()
-(hbnb) ["[User] (98bea5de-9cb0-4d78-8a9d-c4de03521c30) {'updated_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134362), 'id': '98bea5de-9cb0-4d78-8a9d-c4de03521c30', 'name': 'Todd the Toad', 'created_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134343)}"]
-```
-###### Example 3: Update User (by dictionary)
-Usage: <class_name>.update(<_id>, <dictionary>)
-```
-(hbnb) User.update("98bea5de-9cb0-4d78-8a9d-c4de03521c30", {'name': 'Fred the Frog', 'age': 9})
-(hbnb)
-(hbnb) User.all()
-(hbnb) ["[User] (98bea5de-9cb0-4d78-8a9d-c4de03521c30) {'updated_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134362), 'name': 'Fred the Frog', 'age': 9, 'id': '98bea5de-9cb0-4d78-8a9d-c4de03521c30', 'created_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134343)}"]
-```
-<br>

@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-""" Console Module """
+"""
+This program contains the entry point of the command intepreter
+"""
 import cmd
 import sys
 from models.base_model import BaseModel
@@ -13,22 +15,24 @@ from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
-    """ Contains the functionality for the HBNB console"""
+    """
+    This class contains the functionality for the console
+    """
 
     # determines prompt for interactive/non-interactive modes
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
 
     classes = {
-               'BaseModel': BaseModel, 'User': User, 'Place': Place,
-               'State': State, 'City': City, 'Amenity': Amenity,
-               'Review': Review
-              }
+        'BaseModel': BaseModel, 'User': User, 'Place': Place,
+        'State': State, 'City': City, 'Amenity': Amenity,
+        'Review': Review
+    }
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
-             'number_rooms': int, 'number_bathrooms': int,
-             'max_guest': int, 'price_by_night': int,
-             'latitude': float, 'longitude': float
-            }
+        'number_rooms': int, 'number_bathrooms': int,
+        'max_guest': int, 'price_by_night': int,
+        'latitude': float, 'longitude': float
+    }
 
     def preloop(self):
         """Prints if isatty is false"""
@@ -73,7 +77,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is'}'\
+                    if pline[0] is '{' and pline[-1] is '}' \
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -93,28 +97,67 @@ class HBNBCommand(cmd.Cmd):
         return stop
 
     def do_quit(self, command):
-        """ Method to exit the HBNB console"""
+        """
+        Exits the interactive shell
+        Args:
+            command:
+
+        Returns:
+
+        """
         exit()
 
     def help_quit(self):
-        """ Prints the help documentation for quit  """
+        """
+        Prints information on quit command
+        Returns:
+
+        """
         print("Exits the program with formatting\n")
 
     def do_EOF(self, arg):
-        """ Handles EOF to exit program """
+        """
+        Exits the interactive shell
+        Args:
+            arg:
+
+        Returns:
+
+        """
         print()
         exit()
 
     def help_EOF(self):
-        """ Prints the help documentation for EOF """
+        """
+        Prints information on EOF command
+        Returns:
+
+        """
         print("Exits the program without formatting\n")
 
     def emptyline(self):
-        """ Overrides the emptyline method of CMD """
+        """
+        This method executes nothing when there is an
+        empty line
+        Returns:
+
+        """
         pass
 
     def do_create(self, args):
-        """ Create an object of any class"""
+        """
+        This method creates a new instance of
+        Base Model, saves it to a json file and
+        prints the id
+        Args:
+            args: The class name
+
+        Examples:
+            create BaseModel
+
+        Returns:
+
+        """
         try:
             if not args:
                 raise SyntaxError()
@@ -146,12 +189,28 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
 
     def help_create(self):
-        """ Help information for the create method """
+        """
+        Prints information on create command
+        Returns:
+
+        """
         print("Creates a class of any type")
         print("[Usage]: create <className>\n")
 
     def do_show(self, args):
-        """ Method to show an individual object """
+        """
+        This method prints the string representation of an instance
+        based on the class name and  id
+        Args:
+            args
+
+        Examples:
+            show <class Name> <id>
+            show BaseModel 1234-1234-1234
+
+        Returns:
+
+        """
         new = args.partition(" ")
         c_name = new[0]
         c_id = new[2]
@@ -179,12 +238,28 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
 
     def help_show(self):
-        """ Help information for the show command """
+        """
+        Prints information on create command
+        Returns:
+
+        """
         print("Shows an individual instance of a class")
         print("[Usage]: show <className> <objectId>\n")
 
     def do_destroy(self, args):
-        """ Destroys a specified object """
+        """
+        This method deletes an instance based on the class name
+        ,and it's ID
+        Args:
+            args
+
+        Examples:
+            destroy <class name> <id>
+            destroy BaseModel 1234-1234-1234
+
+        Returns:
+
+        """
         new = args.partition(" ")
         c_name = new[0]
         c_id = new[2]
@@ -206,18 +281,34 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
+            del (storage.all()[key])
             storage.save()
         except KeyError:
             print("** no instance found **")
 
     def help_destroy(self):
-        """ Help information for the destroy command """
+        """
+        Prints information on destroy command
+        Returns:
+
+        """
         print("Destroys an individual instance of a class")
         print("[Usage]: destroy <className> <objectId>\n")
 
     def do_all(self, args):
-        """ Shows all objects, or all objects of a class"""
+        """
+        This method prints all string representation of all
+        instances either alone or by class name
+        Args:
+            args: The class name
+
+        Examples:
+            all BaseModel
+            all
+
+        Returns:
+
+        """
         print_list = []
 
         if args:
@@ -235,12 +326,26 @@ class HBNBCommand(cmd.Cmd):
         print(print_list)
 
     def help_all(self):
-        """ Help information for the all command """
+        """
+        Prints information on all command
+        Returns:
+
+        """
         print("Shows all objects, or all of a class")
         print("[Usage]: all <className>\n")
 
     def do_count(self, args):
-        """Count current number of class instances"""
+        """
+        This method counts the number of instances of a class
+        Args:
+            args:
+
+        Example:
+            count UserUser f650f143-6b7a-4630-a21b-562cda8f4a04
+            {'first_name': 'Chris', 'age': '32'}
+        Returns:
+
+        """
         count = 0
         for k, v in storage._FileStorage__objects.items():
             if args == k.split('.')[0]:
@@ -248,11 +353,27 @@ class HBNBCommand(cmd.Cmd):
         print(count)
 
     def help_count(self):
-        """ """
+        """
+        Prints information on count command
+        Returns:
+
+        """
         print("Usage: count <class_name>")
 
     def do_update(self, args):
-        """ Updates a certain object with new info """
+        """
+        This method updates an instance based on the class name and
+        id by adding or updating attributes
+        Args:
+            args:
+
+        Examples:
+            update <class name> <id> <attribute> "<value>"
+            update BaseModel 1234-1234-1234 email "aibnb@mail.com"
+
+        Returns:
+
+        """
         c_name = c_id = att_name = att_val = kwargs = ''
 
         # isolate cls from id/args, ex: (<cls>, delim, <id/args>)
@@ -335,9 +456,14 @@ class HBNBCommand(cmd.Cmd):
         new_dict.save()  # save updates to file
 
     def help_update(self):
-        """ Help information for the update class """
+        """
+        Prints information on update command
+        Returns:
+
+        """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()

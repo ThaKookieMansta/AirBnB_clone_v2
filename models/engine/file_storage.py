@@ -1,15 +1,23 @@
 #!/usr/bin/python3
-"""This module defines a class to manage file storage for hbnb clone"""
+"""
+This module contains the class File storage which handles
+serialization and deserialization of the dictionaries
+"""
 import json
 
 
 class FileStorage:
-    """This class manages storage of hbnb models in JSON format"""
+    """
+    This class is the file storage class that handles
+    serialization and deserialization of the dictionaries
+    """
     __file_path = 'file.json'
     __objects = {}
 
     def all(self, cls=None):
-        """Returns a dictionary of models currently in storage"""
+        """
+        Returns: The dictionary Objects
+        """
         if cls is not None:
             if type(cls) == str:
                 cls = eval(cls)
@@ -21,11 +29,20 @@ class FileStorage:
         return self.__objects
 
     def new(self, obj):
-        """Adds new object to storage dictionary"""
+        """
+        sets in __objects the obj with key <obj class name>.id
+        Args:
+            obj:
+
+        Returns:
+        """
         self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
 
     def save(self):
-        """Saves storage dictionary to file"""
+        """
+        serializes __objects to the JSON file (path: __file_path)
+        Returns:
+        """
         with open(FileStorage.__file_path, 'w') as f:
             temp = {}
             temp.update(FileStorage.__objects)
@@ -34,7 +51,14 @@ class FileStorage:
             json.dump(temp, f)
 
     def reload(self):
-        """Loads storage dictionary from file"""
+        """
+        deserializes the JSON file to __objects (only if the JSON
+        file (__file_path) exists ; otherwise, do nothing.
+        If the file doesn't exist, no exception should be raised)
+
+        Returns:
+
+        """
         from models.base_model import BaseModel
         from models.user import User
         from models.place import Place
@@ -53,12 +77,19 @@ class FileStorage:
             with open(FileStorage.__file_path, 'r') as f:
                 temp = json.load(f)
                 for key, val in temp.items():
-                        self.all()[key] = classes[val['__class__']](**val)
+                    self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
 
     def delete(self, obj=None):
-        """Delete a given object from __objects, if it exists."""
+        """
+        Deletes obj from __objects if it inside
+        Args:
+            obj: Object to be deleted if condition is met
+
+        Returns:
+
+        """
         try:
             del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
         except (AttributeError, KeyError):
