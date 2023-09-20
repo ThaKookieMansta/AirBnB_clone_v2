@@ -45,27 +45,16 @@ class FileStorage:
 
         Returns:
         """
-        obj_dict = obj.to_dict()
-        key = f"{obj_dict['__class__']}.{str(obj.id)}"
-        FileStorage.__objects[key] = obj
+        self.__objects["{}.{}".format(type(obj).__name__, obj.id)] = obj
 
     def save(self):
         """
         serializes __objects to the JSON file (path: __file_path)
         Returns:
         """
-        new_dict = self.__objects
-        object_dictionary = {obj_id: obj.to_dict() for obj_id, obj in
-                             new_dict.items()}
-
-        for obj_id in object_dictionary:
-            obj_data = object_dictionary[obj_id]
-            for key, value in obj_data.items():
-                if isinstance(value, datetime.datetime):
-                    obj_data[key] = value.strftime(BaseModel.DATE_FORMAT)
-
-        with open(FileStorage.__file_path, mode="w") as json_file:
-            json.dump(object_dictionary, json_file)
+        odict = {o: self.__objects[o].to_dict() for o in self.__objects.keys()}
+        with open(self.__file_path, "w", encoding="utf-8") as f:
+            json.dump(odict, f)
 
 
 def reload(self):
@@ -80,15 +69,11 @@ def reload(self):
     Returns:
     """
     try:
-        with open(FileStorage.__file_path) as json_file:
-            reloaded_dict = json.load(json_file)
-            for obj_data in reloaded_dict.values():
-                if "__class__" in obj_data:
-                    class_name = obj_data.pop("__class__")
-                    cls = globals().get(class_name)
-                    if cls and issubclass(cls, BaseModel):
-                        obj = cls(**obj_data)
-                        self.new(obj)
+        with open(self.__file_path, "r", encoding="utf-8") as f:
+            for o in json.load(f).values():
+                name = o["__class__"]
+                del o["__class__"]
+                self.new(eval(name)(**o))
     except FileNotFoundError:
         pass
 
