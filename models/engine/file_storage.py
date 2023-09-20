@@ -27,15 +27,13 @@ class FileStorage:
         """
         Returns: The dictionary Objects
         """
-        if cls is not None:
-            if type(cls) == str:
-                cls = eval(cls)
-            cls_dict = {}
-            for k, v in self.__objects.items():
-                if type(v) == cls:
-                    cls_dict[k] = v
-            return cls_dict
-        return self.__objects
+        if cls is None:
+            return FileStorage.__objects
+        my_dict = {}
+        for key, val in FileStorage.__objects.items():
+            if isinstance(val, cls):
+                my_dict[key] = val
+        return my_dict
 
     def new(self, obj):
         """
@@ -45,16 +43,19 @@ class FileStorage:
 
         Returns:
         """
-        self.__objects["{}.{}".format(type(obj).__name__, obj.id)] = obj
+        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
 
     def save(self):
         """
         serializes __objects to the JSON file (path: __file_path)
         Returns:
         """
-        odict = {o: self.__objects[o].to_dict() for o in self.__objects.keys()}
-        with open(self.__file_path, "w", encoding="utf-8") as f:
-            json.dump(odict, f)
+        with open(FileStorage.__file_path, 'w') as f:
+            temp = {}
+            temp.update(FileStorage.__objects)
+            for key, val in temp.items():
+                temp[key] = val.to_dict()
+            json.dump(temp, f)
 
 
 def reload(self):
@@ -68,12 +69,17 @@ def reload(self):
 
     Returns:
     """
+    classes = {
+        'BaseModel': BaseModel, 'User': User, 'Place': Place,
+        'State': State, 'City': City, 'Amenity': Amenity,
+        'Review': Review
+    }
     try:
-        with open(self.__file_path, "r", encoding="utf-8") as f:
-            for o in json.load(f).values():
-                name = o["__class__"]
-                del o["__class__"]
-                self.new(eval(name)(**o))
+        temp = {}
+        with open(FileStorage.__file_path, 'r') as f:
+            temp = json.load(f)
+            for key, val in temp.items():
+                self.all()[key] = classes[val['__class__']](**val)
     except FileNotFoundError:
         pass
 
@@ -86,10 +92,12 @@ def reload(self):
         Returns:
 
         """
-        try:
-            del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
-        except (AttributeError, KeyError):
-            pass
+        if obj is None:
+            return
+        key = "{}.{}".format(obj.__class__.__name__, obj.id)
+        if key in FileStorage.__objects:
+            del FileStorage.__objects[key]
+            self.save()
 
     def close(self):
         """
