@@ -4,15 +4,6 @@ This module contains the class File storage which handles
 serialization and deserialization of the dictionaries
 """
 import json
-import datetime
-
-from models.base_model import BaseModel
-from models.amenity import Amenity
-from models.city import City
-from models.place import Place
-from models.review import Review
-from models.state import State
-from models.user import User
 
 
 class FileStorage:
@@ -27,13 +18,15 @@ class FileStorage:
         """
         Returns: The dictionary Objects
         """
-        if cls is None:
-            return FileStorage.__objects
-        my_dict = {}
-        for key, val in FileStorage.__objects.items():
-            if isinstance(val, cls):
-                my_dict[key] = val
-        return my_dict
+        if cls is not None:
+            if type(cls) == str:
+                cls = eval(cls)
+            cls_dict = {}
+            for k, v in self.__objects.items():
+                if type(v) == cls:
+                    cls_dict[k] = v
+            return cls_dict
+        return self.__objects
 
     def new(self, obj):
         """
@@ -57,31 +50,36 @@ class FileStorage:
                 temp[key] = val.to_dict()
             json.dump(temp, f)
 
+    def reload(self):
+        """
+        deserializes the JSON file to __objects (only if the JSON
+        file (__file_path) exists ; otherwise, do nothing.
+        If the file doesn't exist, no exception should be raised)
 
-def reload(self):
-    """
-    deserializes the JSON file to __objects (only if the JSON
-    file (__file_path) exists ; otherwise, do nothing.
-    If the file doesn't exist, no exception should be raised)
+        Returns:
 
-    Args:
-        self:
+        """
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
 
-    Returns:
-    """
-    classes = {
-        'BaseModel': BaseModel, 'User': User, 'Place': Place,
-        'State': State, 'City': City, 'Amenity': Amenity,
-        'Review': Review
-    }
-    try:
-        temp = {}
-        with open(FileStorage.__file_path, 'r') as f:
-            temp = json.load(f)
-            for key, val in temp.items():
-                self.all()[key] = classes[val['__class__']](**val)
-    except FileNotFoundError:
-        pass
+        classes = {
+                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
+                    'State': State, 'City': City, 'Amenity': Amenity,
+                    'Review': Review
+                  }
+        try:
+            temp = {}
+            with open(FileStorage.__file_path, 'r') as f:
+                temp = json.load(f)
+                for key, val in temp.items():
+                    self.all()[key] = classes[val['__class__']](**val)
+        except FileNotFoundError:
+            pass
 
     def delete(self, obj=None):
         """
@@ -92,20 +90,7 @@ def reload(self):
         Returns:
 
         """
-        if obj is None:
-            return
-        key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        if key in FileStorage.__objects:
-            del FileStorage.__objects[key]
-            self.save()
-
-    def close(self):
-        """
-        Calls the reload method
-        Args:
-            self:
-
-        Returns:
-
-        """
-        self.reload()
+        try:
+            del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
+        except (AttributeError, KeyError):
+            pass

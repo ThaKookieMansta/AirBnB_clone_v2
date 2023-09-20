@@ -3,8 +3,10 @@
 This module defines a State class
 """
 from os import getenv
+
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+
 import models
 from models.base_model import Base, BaseModel
 from models.city import City

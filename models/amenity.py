@@ -4,7 +4,8 @@ This module defines an Amenity class
 """
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from models.base_model import Base, BaseModel
+
+from models.base_model import BaseModel, Base
 
 
 class Amenity(BaseModel, Base):
