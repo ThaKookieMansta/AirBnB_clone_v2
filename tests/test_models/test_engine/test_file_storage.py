@@ -38,13 +38,13 @@ class test_fileStorage(unittest.TestCase):
         except Exception:
             pass
 
-    def test_pep8_FileStorage(self):
+    def test_pep8style_of_FileStorage(self):
         """Tests pep8 style"""
         style = pep8.StyleGuide(quiet=True)
         p = style.check_files(['models/engine/file_storage.py'])
         self.assertEqual(p.total_errors, 0, "fix pep8")
 
-    def test_all(self):
+    def test_all_in_Filestorage(self):
         """tests if all works in File Storage"""
         storage = FileStorage()
         obj = storage.all()
@@ -52,7 +52,7 @@ class test_fileStorage(unittest.TestCase):
         self.assertEqual(type(obj), dict)
         self.assertIs(obj, storage._FileStorage__objects)
 
-    def test_new(self):
+    def test_new_instance(self):
         """test when new is created"""
         storage = FileStorage()
         obj = storage.all()
@@ -63,7 +63,7 @@ class test_fileStorage(unittest.TestCase):
         key = user.__class__.__name__ + "." + str(user.id)
         self.assertIsNotNone(obj[key])
 
-    def test_reload_filestorage(self):
+    def test_reload_in_Filestorage(self):
         """
         tests reload
         """

@@ -12,54 +12,57 @@ class TestBaseModel(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """setup for the test"""
+        """this method raises an exception while the test is running, the framework will
+        consider the test to have suffered an error,
+        and the test method will not be executed.
+        """
         cls.base = BaseModel()
-        cls.base.name = "Kev"
-        cls.base.num = 20
+        cls.base.name = "Mara"
+        cls.base.num = 10
 
     @classmethod
     def teardown(cls):
-        """at the end of the test this will tear it down"""
+        """method that tidies up after the test method has been run"""
         del cls.base
 
     def tearDown(self):
-        """teardown"""
+        """method that tidies up after the test method has been run"""
         try:
             os.remove("file.json")
         except Exception:
             pass
 
-    def test_pep8_BaseModel(self):
-        """Testing for pep8"""
+    def test_pep8style_of_BaseModel(self):
+        """Pep8 Test"""
         style = pep8.StyleGuide(quiet=True)
         p = style.check_files(['models/base_model.py'])
         self.assertEqual(p.total_errors, 0, "fix pep8")
 
-    def test_checking_for_docstring_BaseModel(self):
-        """checking for docstrings"""
+    def test_BaseModel_docstring(self):
+        """this method checks the documentation"""
         self.assertIsNotNone(BaseModel.__doc__)
         self.assertIsNotNone(BaseModel.__init__.__doc__)
         self.assertIsNotNone(BaseModel.__str__.__doc__)
         self.assertIsNotNone(BaseModel.save.__doc__)
         self.assertIsNotNone(BaseModel.to_dict.__doc__)
 
-    def test_method_BaseModel(self):
-        """chekcing if Basemodel have methods"""
+    def test_method_of_BaseModel(self):
+        """Test that checks the Base-model's methods"""
         self.assertTrue(hasattr(BaseModel, "__init__"))
         self.assertTrue(hasattr(BaseModel, "save"))
         self.assertTrue(hasattr(BaseModel, "to_dict"))
 
-    def test_init_BaseModel(self):
-        """test if the base is an type BaseModel"""
+    def test_init_in_BaseModel(self):
+        """test if the base is new instance"""
         self.assertTrue(isinstance(self.base, BaseModel))
 
     @unittest.skipIf(getenv("HBNB_TYPE_STORAGE") == 'db', 'DB')
-    def test_save_BaesModel(self):
+    def test_save_in_BaseModel(self):
         """test if the save works"""
         self.base.save()
         self.assertNotEqual(self.base.created_at, self.base.updated_at)
 
-    def test_to_dict_BaseModel(self):
+    def test_dictionary_in_BaseModel(self):
         """test if dictionary works"""
         base_dict = self.base.to_dict()
         self.assertEqual(self.base.__class__.__name__, 'BaseModel')
