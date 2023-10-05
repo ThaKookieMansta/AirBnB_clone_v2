@@ -36,18 +36,29 @@ def do_deploy(archive_path):
 
     """
     try:
-        archive = archive_path.split('/')[-1]
-        path = '/data/web_static/releases/' + archive.strip('.tgz')
-        current = '/data/web_static/current'
-        put(archive_path, '/tmp')
-        run('mkdir -p {}/'.format(path))
-        run('tar -xzf /tmp/{} -C {}'.format(archive, path))
-        run('rm /tmp/{}'.format(archive))
-        run('mv {}/web_static/* {}'.format(path, path))
-        run('rm -rf {}/web_static'.format(path))
-        run('rm -rf {}'.format(current))
-        run('ln -s {} {}'.format(path, current))
+        if not os.path.exists(archive_path):
+            return False
+
+        archive_name = os.path.basename(archive_path)
+        release_dir = '/data/web_static/releases'
+        current_dir = '/data/web_static/current'
+
+        put(archive_path, "/tmp")
+        run("mkdir -p {}/{}".format(
+            release_dir, archive_name.replace('.tgz', '')))
+        run("tar -xzf /tmp/{} -C {}/{}".format(
+            archive_name, release_dir, archive_name.replace('.tgz', '')))
+        run("rm /tmp/{}".format(archive_name))
+        run("mv {}/{}/web_static/* {}/{}".format(
+            release_dir, archive_name.replace('.tgz', ''), release_dir,
+            archive_name.replace('.tgz', '')))
+        run("rm -rf {}/{}/web_static".format(
+            release_dir, archive_name.replace('.tgz', '')))
+        run("rm -rf {}".format(current_dir))
+        run("ln -s {}/{} {}".format(
+            release_dir, archive_name.replace('.tgz', ''), current_dir))
         print('New version deployed!')
         return True
-    except:
+    except Exception as e:
+        print(f"Error: {e}")
         return False
