@@ -7,6 +7,7 @@ from fabric.api import local, env
 env.user = 'ubuntu'
 env.hosts = ['34.227.93.59', '18.234.192.168']
 
+
 def do_pack():
     """
     This function generates an archive from the web static content
