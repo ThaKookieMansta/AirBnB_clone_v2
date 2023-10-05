@@ -30,6 +30,6 @@ sudo printf %s "server {
       root /var/www/html;
       internal;
     }
-}" | sudo tee -a /etc/nginx/sites-available/default
+}"  > /etc/nginx/sites-available/default
 
 sudo service nginx restart
