@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
 # This script sets up the web servers for the web static content
 
-sudo apt-get update
-sudo apt-get install -y nginx
-sudo mkdir -p /data/web_static/releases/test/
-sudo mkdir -p /data/web_static/shared/
+apt-get update
+apt-get install -y nginx
+
+mkdir -p /data/web_static/releases/test/
+mkdir -p /data/web_static/shared/
 echo "Hello Chris" | sudo tee -a /data/web_static/releases/test/index.html
-sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
-sudo chown -R ubuntu /data/
-sudo chgrp -R ubuntu /data/
-sudo printf %s "server {
+ln -sf /data/web_static/releases/test/ /data/web_static/current
+
+chown -R ubuntu /data/
+chgrp -R ubuntu /data/
+
+printf %s "server {
     listen 80 default_server;
     listen [::]:80 default_server;
     add_header X-Served-By $HOSTNAME;
@@ -32,4 +35,4 @@ sudo printf %s "server {
     }
 }"  > /etc/nginx/sites-available/default
 
-sudo service nginx restart
+service nginx restart

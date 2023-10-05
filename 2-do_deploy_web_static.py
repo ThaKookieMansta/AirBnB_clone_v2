@@ -35,33 +35,19 @@ def do_deploy(archive_path):
     Returns:
 
     """
-    if os.path.isfile(archive_path) is False:
+    try:
+        archive = archive_path.split('/')[-1]
+        path = '/data/web_static/releases/' + archive.strip('.tgz')
+        current = '/data/web_static/current'
+        put(archive_path, '/tmp')
+        run('mkdir -p {}/'.format(path))
+        run('tar -xzf /tmp/{} -C {}'.format(archive, path))
+        run('rm /tmp/{}'.format(archive))
+        run('mv {}/web_static/* {}'.format(path, path))
+        run('rm -rf {}/web_static'.format(path))
+        run('rm -rf {}'.format(current))
+        run('ln -s {} {}'.format(path, current))
+        print('New version deployed!')
+        return True
+    except FileNotFoundError:
         return False
-    file = archive_path.split("/")[-1]
-    name = file.split(".")[0]
-
-    if put(archive_path, "/tmp/{}".format(file)).failed is True:
-        return False
-    if run("rm -rf /data/web_static/releases/{}/".
-           format(name)).failed is True:
-        return False
-    if run("mkdir -p /data/web_static/releases/{}/".
-           format(name)).failed is True:
-        return False
-    if run("tar -xzf /tmp/{} -C /data/web_static/releases/{}/".
-           format(file, name)).failed is True:
-        return False
-    if run("rm /tmp/{}".format(file)).failed is True:
-        return False
-    if run("mv /data/web_static/releases/{}/web_static/* "
-           "/data/web_static/releases/{}/".format(name, name)).failed is True:
-        return False
-    if run("rm -rf /data/web_static/releases/{}/web_static".
-           format(name)).failed is True:
-        return False
-    if run("rm -rf /data/web_static/current").failed is True:
-        return False
-    if run("ln -s /data/web_static/releases/{}/ /data/web_static/current".
-           format(name)).failed is True:
-        return False
-    return True
