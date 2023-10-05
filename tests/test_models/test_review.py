@@ -31,17 +31,17 @@ class TestReview(unittest.TestCase):
         except Exception:
             pass
 
-    def test_pep8_Review(self):
+    def test_pep8style_of_Review(self):
         """Tests pep8 style"""
         style = pep8.StyleGuide(quiet=True)
         p = style.check_files(['models/review.py'])
         self.assertEqual(p.total_errors, 0, "fix pep8")
 
-    def test_checking_for_docstring_Review(self):
+    def test_Review_docstring(self):
         """checking for docstrings"""
         self.assertIsNotNone(Review.__doc__)
 
-    def test_attributes_review(self):
+    def test_attributes_of_Review(self):
         """chekcing if review have attributes"""
         self.assertTrue('id' in self.rev.__dict__)
         self.assertTrue('created_at' in self.rev.__dict__)
@@ -50,23 +50,23 @@ class TestReview(unittest.TestCase):
         self.assertTrue('text' in self.rev.__dict__)
         self.assertTrue('user_id' in self.rev.__dict__)
 
-    def test_is_subclass_Review(self):
+    def test_subclass_of_Review(self):
         """test if review is subclass of BaseModel"""
         self.assertTrue(issubclass(self.rev.__class__, BaseModel), True)
 
-    def test_attribute_types_Review(self):
+    def test_attribute_types_of_Review(self):
         """test attribute type for Review"""
         self.assertEqual(type(self.rev.text), str)
         self.assertEqual(type(self.rev.place_id), str)
         self.assertEqual(type(self.rev.user_id), str)
 
     @unittest.skipIf(getenv("HBNB_TYPE_STORAGE") == 'db', 'DB')
-    def test_save_Review(self):
+    def test_save_in_Review(self):
         """test if the save works"""
         self.rev.save()
         self.assertNotEqual(self.rev.created_at, self.rev.updated_at)
 
-    def test_to_dict_Review(self):
+    def test_dictionary_in_Review(self):
         """test if dictionary works"""
         self.assertEqual('to_dict' in dir(self.rev), True)
 

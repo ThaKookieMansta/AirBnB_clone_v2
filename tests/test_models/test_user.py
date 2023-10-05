@@ -31,17 +31,17 @@ class TestUser(unittest.TestCase):
         except Exception:
             pass
 
-    def test_pep8_User(self):
+    def test_pep8style_of_User(self):
         """Tests pep8 style"""
         style = pep8.StyleGuide(quiet=True)
         p = style.check_files(['models/user.py'])
         self.assertEqual(p.total_errors, 0, "fix pep8")
 
-    def test_checking_for_docstring_User(self):
+    def test_User_docstring(self):
         """checking for docstrings"""
         self.assertIsNotNone(User.__doc__)
 
-    def test_attributes_User(self):
+    def test_attributes_of_User(self):
         """chekcing if User have attributes"""
         self.assertTrue('email' in self.user.__dict__)
         self.assertTrue('id' in self.user.__dict__)
@@ -51,23 +51,23 @@ class TestUser(unittest.TestCase):
         self.assertTrue('first_name' in self.user.__dict__)
         self.assertTrue('last_name' in self.user.__dict__)
 
-    def test_is_subclass_User(self):
+    def test_subclass_of_User(self):
         """test if User is subclass of Basemodel"""
         self.assertTrue(issubclass(self.user.__class__, BaseModel), True)
 
-    def test_attribute_types_User(self):
+    def test_attribute_types_of_User(self):
         """test attribute type for User"""
         self.assertEqual(type(self.user.email), str)
         self.assertEqual(type(self.user.password), str)
         self.assertEqual(type(self.user.first_name), str)
         self.assertEqual(type(self.user.first_name), str)
 
-    def test_save_User(self):
+    def test_save_in_User(self):
         """test if the save works"""
         self.user.save()
         self.assertNotEqual(self.user.created_at, self.user.updated_at)
 
-    def test_to_dict_User(self):
+    def test_dictionary_in_User(self):
         """test if dictionary works"""
         self.assertEqual('to_dict' in dir(self.user), True)
 
