@@ -97,10 +97,10 @@ class DBStorage:
 
         """
         Base.metadata.create_all(self.__engine)
-        curr_db_session = sessionmaker(bind=self.__engine,
+        session_factory = sessionmaker(bind=self.__engine,
                                        expire_on_commit=False)
-        safe_session = scoped_session(curr_db_session)
-        self.__session = safe_session()
+        Session = scoped_session(session_factory)
+        self.__session = Session()
 
     def close(self):
         """
