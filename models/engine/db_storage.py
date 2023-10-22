@@ -28,13 +28,15 @@ class DBStorage:
         """
         Initializes the DBStorage instances
         """
-        self.__engine = create_engine("mysql+mysqldb://{}:{}@{}/{}".
-                                      format(getenv("HBNB_MYSQL_USER"),
-                                             getenv("HBNB_MYSQL_PWD"),
-                                             getenv("HBNB_MYSQL_HOST"),
-                                             getenv("HBNB_MYSQL_DB")),
-                                      pool_pre_ping=True)
-        if getenv("HBNB_ENV") == "test":
+        db_uri = "{0}+{1}://{2}:{3}@{4}:3306/{5}".format(
+            'mysql', 'mysqldb', getenv('HBNB_MYSQL_USER'),
+            getenv('HBNB_MYSQL_PWD'), getenv('HBNB_MYSQL_HOST'),
+            getenv('HBNB_MYSQL_DB'))
+
+        self.__engine = create_engine(db_uri, pool_pre_ping=True)
+        self.reload()
+
+        if getenv('HBNB_ENV') == 'test':
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
@@ -46,18 +48,15 @@ class DBStorage:
         Returns: Dictionary file
 
         """
-        if cls is None:
-            objs = self.__session.query(State).all()
-            objs.extend(self.__session.query(City).all())
-            objs.extend(self.__session.query(User).all())
-            objs.extend(self.__session.query(Place).all())
-            objs.extend(self.__session.query(Review).all())
-            objs.extend(self.__session.query(Amenity).all())
-        else:
-            if type(cls) == str:
-                cls = eval(cls)
-            objs = self.__session.query(cls)
-        return {"{}.{}".format(type(o).__name__, o.id): o for o in objs}
+        entities = dict()
+
+        if cls:
+            return self.get_data_from_table(cls, entities)
+
+        for entity in all_classes:
+            entities = self.get_data_from_table(eval(entity), entities)
+
+        return entities
 
     def new(self, obj):
         """
@@ -101,6 +100,19 @@ class DBStorage:
                                        expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session()
+
+    def get_data_from_table(self, cls, structure):
+        """Get the data from a MySQL Table
+        """
+
+        if type(structure) is dict:
+            query = self.__session.query(cls)
+
+            for _row in query.all():
+                key = "{}.{}".format(cls.__name__, _row.id)
+                structure[key] = _row
+
+            return structure
 
     def close(self):
         """

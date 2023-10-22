@@ -25,14 +25,15 @@ class FileStorage:
         """
         Returns: The dictionary Objects
         """
-        if cls is not None:
-            if type(cls) == str:
-                cls = eval(cls)
-            cls_dict = {}
-            for k, v in self.__objects.items():
-                if type(v) == cls:
-                    cls_dict[k] = v
-            return cls_dict
+        if cls:
+            same_type = dict()
+
+            for key, obj in self.__objects.items():
+                if obj.__class__ == cls:
+                    same_type[key] = obj
+
+            return same_type
+
         return self.__objects
 
     def new(self, obj):
@@ -43,16 +44,20 @@ class FileStorage:
 
         Returns:
         """
-        self.__objects["{}.{}".format(type(obj).__name__, obj.id)] = obj
+        if obj:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
+            self.__objects[key] = obj
 
     def save(self):
         """
         serializes __objects to the JSON file (path: __file_path)
         Returns:
         """
-        odict = {o: self.__objects[o].to_dict() for o in self.__objects.keys()}
-        with open(self.__file_path, "w", encoding="utf-8") as f:
-            json.dump(odict, f)
+        my_dict = {}
+        for key, value in self.__objects.items():
+            my_dict[key] = value.to_dict()
+        with open(self.__file_path, 'w', encoding="UTF-8") as f:
+            json.dump(my_dict, f)
 
     def reload(self):
         """
@@ -64,11 +69,10 @@ class FileStorage:
 
         """
         try:
-            with open(self.__file_path, "r", encoding="utf-8") as f:
-                for o in json.load(f).values():
-                    name = o["__class__"]
-                    del o["__class__"]
-                    self.new(eval(name)(**o))
+            with open(self.__file_path, 'r', encoding="UTF-8") as f:
+                for key, value in (json.load(f)).items():
+                    value = eval(value["__class__"])(**value)
+                    self.__objects[key] = value
         except FileNotFoundError:
             pass
 
@@ -81,10 +85,12 @@ class FileStorage:
         Returns:
 
         """
-        try:
-            del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
-        except (AttributeError, KeyError):
-            pass
+        if obj:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
+
+            if self.__objects[key]:
+                del self.__objects[key]
+                self.save()
 
     def close(self):
         """Call the reload method."""
