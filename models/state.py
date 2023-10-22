@@ -17,10 +17,13 @@ class State(BaseModel, Base):
     This class represents a State Class
     """
     __tablename__ = "states"
-    name = Column(String(128), nullable=False)
-    cities = relationship("City", backref="state", cascade="delete")
+    if getenv('HBNB_TYPE_STORAGE') == 'db':
+        name = Column(String(128), nullable=False)
+        cities = relationship('City', backref='state',
+                              cascade='all, delete-orphan')
+    else:
+        name = ''
 
-    if getenv("HBNB_TYPE_STORAGE") != "db":
         @property
         def cities(self):
             """
@@ -28,8 +31,10 @@ class State(BaseModel, Base):
             Returns:
 
             """
-            city_list = []
-            for city in list(models.storage.all(City).values()):
+            cities = list()
+
+            for _id, city in models.storage.all(City).items():
                 if city.state_id == self.id:
-                    city_list.append(city)
-            return city_list
+                    cities.append(city)
+
+            return cities
