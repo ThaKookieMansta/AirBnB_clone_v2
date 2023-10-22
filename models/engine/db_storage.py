@@ -17,7 +17,6 @@ from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 
 
-
 class DBStorage:
     """
     This Class represents the dbstorage engine
